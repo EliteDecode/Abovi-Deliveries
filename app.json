@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "AboviPh",
+    "slug": "abovi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash1.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1C44A6"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#1C44A6"
+      },
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.elitede_code.abovi"
+    },
+
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "475c9c7b-8276-4647-b521-80c45484ef51"
+      }
+    }
+  }
+}
