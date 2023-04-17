@@ -87,7 +87,9 @@ const ActiveTransactions = () => {
       <MyStatusBar backgroundColor="#1C44A6" barStyle="light-content" />
       <View className=" mt-5 flex-1">
         <View className="flex-row space-x-3 px-5">
-          <TouchableOpacity onPress={() => navigation.navigate("Agent_Home")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Agent_Home", "home")}
+          >
             <Image source={arrow} className="w-5 h-5" />
           </TouchableOpacity>
           <Text className="text-[16px] font-black text-blue-900">
@@ -140,16 +142,6 @@ const ActiveTransactions = () => {
                   <Text className=" text-[16px]">
                     Ooops!!!, No Transactions Initaited
                   </Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("Preform", route?.params)
-                    }
-                    className="w-full bg-[#F3661E] items-center justify-center rounded-lg text-center py-3 mt-2"
-                  >
-                    <Text className="font-semibold text-white text-[12px] ">
-                      Initaite a Transaction
-                    </Text>
-                  </TouchableOpacity>
                 </View>
               ) : (
                 <FlatList

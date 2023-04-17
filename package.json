@@ -27,7 +27,7 @@
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
-    "react-native": "0.71.4",
+    "react-native": "0.71.6",
     "react-native-confirmation-code-field": "^7.3.1",
     "react-native-element-textinput": "^2.2.0",
     "react-native-image-picker": "^5.3.1",
@@ -47,7 +47,7 @@
     "tailwindcss": "^3.2.7",
     "uglify-es": "^3.2.2",
     "yup": "^1.0.2",
-    "expo-updates": "~0.16.3",
+    "expo-updates": "~0.16.4",
     "expo-splash-screen": "~0.18.1",
     "react-native-gesture-handler": "~2.9.0"
   },

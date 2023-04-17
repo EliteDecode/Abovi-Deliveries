@@ -124,282 +124,294 @@ const Account = () => {
       <MyStatusBar backgroundColor="#1C44A6" barStyle="light-content" />
 
       <ScrollView className=" flex-1  mt-5">
-        <View className="flex-row justify-between items-center px-5">
-          <TouchableOpacity onPress={() => navigation.navigate(Home)}>
-            <Image source={arrow} className="w-5 h-5" />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text className="text-[13px] font-semibold">Profile</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={LogoutUser}>
-            <Image source={logout} className="w-5 h-5" />
-          </TouchableOpacity>
-        </View>
-        <ProfileHead data={data} />
-
-        {/* Profile form */}
-        <View className="px-5 mt-5 py-1">
-          <View>
-            <Text className="text-[16px] font-bold">Personal Details</Text>
+        <View className="mb-56">
+          <View className="flex-row justify-between items-center px-5">
+            <TouchableOpacity onPress={() => navigation.navigate(Home)}>
+              <Image source={arrow} className="w-5 h-5" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text className="text-[13px] font-semibold">Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={LogoutUser}>
+              <Image source={logout} className="w-5 h-5" />
+            </TouchableOpacity>
           </View>
-          <Formik
-            initialValues={{
-              Email: route?.params === "userData" ? Email : EmailAgent,
-              Firstname:
-                route?.params === "userData" ? Firstname : FirstnameAgent,
-              Lastname: route?.params === "userData" ? Lastname : LastnameAgent,
-              Address: route?.params === "userData" ? Address : AddressAgent,
-              Phone: route?.params === "userData" ? Phone : PhoneAgent,
-            }}
-            validationSchema={updateSchema}
-            onSubmit={(values) => {
-              setLoading(true);
-              const token = data?.data?.token;
-              const id = data?.data?._id;
+          <ProfileHead data={data} />
 
-              update(values, id, token).then((data) => {
-                setLoading(false);
-                if (data?.message?.includes("Congratulations")) {
-                  Alert.alert("Congratulations", `Data Updated Successfully`, [
-                    {
-                      text: "Cancel",
-                      style: "cancel",
-                    },
-                    {
-                      text: "OK",
-                      onPress: () => navigation.navigate("Home", "refresh"),
-                    },
-                  ]);
-                } else if (
-                  data?.message?.includes(
-                    "Verification email sent successfully"
-                  )
-                ) {
-                  navigation.navigate("Verify_Update", {
-                    data,
-                    NewEmail: values.Email,
-                  });
-                } else {
-                  Alert.alert("Opps", `${data}`, [
-                    {
-                      text: "Cancel",
-                      style: "cancel",
-                    },
-                    { text: "OK" },
-                  ]);
-                }
-              });
-            }}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              errors,
-              touched,
-              values,
-              isSubmitting,
-            }) => (
-              <>
-                <View
-                  className={`${
-                    Platform.OS === "ios" ? "mb-3" : "mb-3"
-                  } realtive`}
-                >
-                  <TextInput
-                    label="Firstname"
-                    style={styles.input}
-                    labelStyle={styles.labelStyle}
-                    className="w-12/12 mb-1"
-                    onChangeText={handleChange("Firstname")}
-                    onBlur={handleBlur("Firstname")}
-                    value={values.Firstname}
-                  />
-                  <View className="relative">
-                    {errors.Firstname && touched.Firstname ? (
-                      <Text className="text-[13px] pl-0 absolute  text-red-500">
-                        {errors.Firstname} (*)
-                      </Text>
-                    ) : null}
-                  </View>
-                </View>
-                <View
-                  className={`${
-                    Platform.OS === "ios" ? "mb-3" : "mb-3"
-                  } realtive`}
-                >
-                  <TextInput
-                    label="Lastname"
-                    style={styles.input}
-                    labelStyle={styles.labelStyle}
-                    className="w-12/12 mb-1"
-                    onChangeText={handleChange("Lastname")}
-                    onBlur={handleBlur("Lastname")}
-                    value={values.Lastname}
-                  />
-                  <View className="relative">
-                    {errors.Lastname && touched.Lastname ? (
-                      <Text className="text-[13px] pl-0 absolute  text-red-500">
-                        {errors.Lastname} (*)
-                      </Text>
-                    ) : null}
-                  </View>
-                </View>
-                <View
-                  className={`${
-                    Platform.OS === "ios" ? "mb-3" : "mb-3"
-                  } realtive`}
-                >
-                  <TextInput
-                    label="Email"
-                    style={styles.input}
-                    labelStyle={styles.labelStyle}
-                    className="w-12/12 mb-1"
-                    onChangeText={handleChange("Email")}
-                    onBlur={handleBlur("Email")}
-                    value={values.Email}
-                  />
-                  <View className="relative">
-                    {errors.Email && touched.Email ? (
-                      <Text className="text-[13px] pl-0 absolute  text-red-500">
-                        {errors.Email} (*)
-                      </Text>
-                    ) : null}
-                  </View>
-                </View>
-                <View
-                  className={`${
-                    Platform.OS === "ios" ? "mb-3" : "mb-3"
-                  } realtive`}
-                >
-                  <TextInput
-                    label="Address"
-                    style={styles.input}
-                    labelStyle={styles.labelStyle}
-                    className="w-12/12 mb-1"
-                    onChangeText={handleChange("Address")}
-                    onBlur={handleBlur("Address")}
-                    value={values.Address}
-                  />
-                  <View className="relative">
-                    {errors.Address && touched.Address ? (
-                      <Text className="text-[13px] pl-0 absolute  text-red-500">
-                        {errors.Address} (*)
-                      </Text>
-                    ) : null}
-                  </View>
-                </View>
-
-                <View
-                  className={`${
-                    Platform.OS === "ios" ? "mb-3" : "mb-3"
-                  } realtive`}
-                >
-                  <TextInput
-                    label="Phone Number"
-                    style={styles.input}
-                    labelStyle={styles.labelStyle}
-                    className="w-12/12 mb-1"
-                    onChangeText={handleChange("Phone")}
-                    onBlur={handleBlur("Phone")}
-                    value={values?.Phone?.toString()}
-                  />
-                  <View className="relative">
-                    {errors.Phone && touched.Phone ? (
-                      <Text className="text-[13px] pl-0 absolute  text-red-500">
-                        {errors.Phone} (*)
-                      </Text>
-                    ) : null}
-                  </View>
-                </View>
-                {route?.params === "userData" ? (
-                  <View>
-                    {loading ? (
-                      <View className="flex-row space-x-1">
-                        <Button
-                          title="Please wait..."
-                          color="#1C44A6"
-                          tintColor="#fff"
-                          titleStyle={{ fontSize: 11 }}
-                          style={{
-                            width: "50%",
-                            marginTop: 10,
-                            padding: 3,
-                          }}
-                          trailing={(props) => (
-                            <ActivityIndicator size="small" color="#fff" />
-                          )}
-                          onPress={handleSubmit}
-                        />
-                        <Button
-                          title="Update Password"
-                          color="#1C44A6"
-                          titleStyle={{ fontSize: 11 }}
-                          tintColor="#fff"
-                          style={{
-                            width: "50%",
-                            marginTop: 10,
-                            padding: 2,
-                          }}
-                          onPress={() => navigation.navigate("Update_Password")}
-                        />
-                      </View>
-                    ) : (
-                      <View className="flex-row space-x-1">
-                        <Button
-                          title="Update Profile"
-                          color="#1C44A6"
-                          titleStyle={{ fontSize: 11 }}
-                          tintColor="#fff"
-                          style={{
-                            width: "50%",
-                            marginTop: 10,
-                            padding: 3,
-                          }}
-                          isSubmitting
-                          onPress={handleSubmit}
-                        />
-                        <Button
-                          title="Update Password"
-                          color="#1C44A6"
-                          titleStyle={{ fontSize: 11 }}
-                          tintColor="#fff"
-                          style={{
-                            width: "50%",
-                            marginTop: 10,
-                            padding: 2,
-                          }}
-                          onPress={() => navigation.navigate("Update_Password")}
-                        />
-                      </View>
-                    )}
-                  </View>
-                ) : (
-                  ""
-                )}
-              </>
-            )}
-          </Formik>
-          {route?.params === "userData" && (
+          {/* Profile form */}
+          <View className="px-5 mt-5 py-1">
             <View>
-              <Button
-                title="Delete Account"
-                color="#1C44A6"
-                titleStyle={{ fontSize: 11 }}
-                variant="outlined"
-                tintColor="#fff"
-                style={{
-                  width: "100%",
-                  marginTop: 10,
-                  padding: 2,
-                }}
-                trailing={(props) => (
-                  <Image source={deleteImg} className="w-5 h-5" />
-                )}
-                onPress={handleDelete}
-              />
+              <Text className="text-[16px] font-bold">Personal Details</Text>
             </View>
-          )}
+            <Formik
+              initialValues={{
+                Email: route?.params === "userData" ? Email : EmailAgent,
+                Firstname:
+                  route?.params === "userData" ? Firstname : FirstnameAgent,
+                Lastname:
+                  route?.params === "userData" ? Lastname : LastnameAgent,
+                Address: route?.params === "userData" ? Address : AddressAgent,
+                Phone: route?.params === "userData" ? Phone : PhoneAgent,
+              }}
+              validationSchema={updateSchema}
+              onSubmit={(values) => {
+                setLoading(true);
+                const token = data?.data?.token;
+                const id = data?.data?._id;
+
+                update(values, id, token).then((data) => {
+                  setLoading(false);
+                  if (data?.message?.includes("Congratulations")) {
+                    Alert.alert(
+                      "Congratulations",
+                      `Data Updated Successfully`,
+                      [
+                        {
+                          text: "Cancel",
+                          style: "cancel",
+                        },
+                        {
+                          text: "OK",
+                          onPress: () => navigation.navigate("Home", "refresh"),
+                        },
+                      ]
+                    );
+                  } else if (
+                    data?.message?.includes(
+                      "Verification email sent successfully"
+                    )
+                  ) {
+                    navigation.navigate("Verify_Update", {
+                      data,
+                      NewEmail: values.Email,
+                    });
+                  } else {
+                    Alert.alert("Opps", `${data}`, [
+                      {
+                        text: "Cancel",
+                        style: "cancel",
+                      },
+                      { text: "OK" },
+                    ]);
+                  }
+                });
+              }}
+            >
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                errors,
+                touched,
+                values,
+                isSubmitting,
+              }) => (
+                <>
+                  <View
+                    className={`${
+                      Platform.OS === "ios" ? "mb-3" : "mb-3"
+                    } realtive`}
+                  >
+                    <TextInput
+                      label="Firstname"
+                      style={styles.input}
+                      labelStyle={styles.labelStyle}
+                      className="w-12/12 mb-1"
+                      onChangeText={handleChange("Firstname")}
+                      onBlur={handleBlur("Firstname")}
+                      value={values.Firstname}
+                    />
+                    <View className="relative">
+                      {errors.Firstname && touched.Firstname ? (
+                        <Text className="text-[13px] pl-0 absolute  text-red-500">
+                          {errors.Firstname} (*)
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
+                  <View
+                    className={`${
+                      Platform.OS === "ios" ? "mb-3" : "mb-3"
+                    } realtive`}
+                  >
+                    <TextInput
+                      label="Lastname"
+                      style={styles.input}
+                      labelStyle={styles.labelStyle}
+                      className="w-12/12 mb-1"
+                      onChangeText={handleChange("Lastname")}
+                      onBlur={handleBlur("Lastname")}
+                      value={values.Lastname}
+                    />
+                    <View className="relative">
+                      {errors.Lastname && touched.Lastname ? (
+                        <Text className="text-[13px] pl-0 absolute  text-red-500">
+                          {errors.Lastname} (*)
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
+                  <View
+                    className={`${
+                      Platform.OS === "ios" ? "mb-3" : "mb-3"
+                    } realtive`}
+                  >
+                    <TextInput
+                      label="Email"
+                      style={styles.input}
+                      labelStyle={styles.labelStyle}
+                      className="w-12/12 mb-1"
+                      onChangeText={handleChange("Email")}
+                      onBlur={handleBlur("Email")}
+                      value={values.Email}
+                    />
+                    <View className="relative">
+                      {errors.Email && touched.Email ? (
+                        <Text className="text-[13px] pl-0 absolute  text-red-500">
+                          {errors.Email} (*)
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
+                  <View
+                    className={`${
+                      Platform.OS === "ios" ? "mb-3" : "mb-3"
+                    } realtive`}
+                  >
+                    <TextInput
+                      label="Address"
+                      style={styles.input}
+                      labelStyle={styles.labelStyle}
+                      className="w-12/12 mb-1"
+                      onChangeText={handleChange("Address")}
+                      onBlur={handleBlur("Address")}
+                      value={values.Address}
+                    />
+                    <View className="relative">
+                      {errors.Address && touched.Address ? (
+                        <Text className="text-[13px] pl-0 absolute  text-red-500">
+                          {errors.Address} (*)
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
+
+                  <View
+                    className={`${
+                      Platform.OS === "ios" ? "mb-3" : "mb-3"
+                    } realtive`}
+                  >
+                    <TextInput
+                      label="Phone Number"
+                      style={styles.input}
+                      labelStyle={styles.labelStyle}
+                      className="w-12/12 mb-1"
+                      onChangeText={handleChange("Phone")}
+                      onBlur={handleBlur("Phone")}
+                      value={values?.Phone?.toString()}
+                    />
+                    <View className="relative">
+                      {errors.Phone && touched.Phone ? (
+                        <Text className="text-[13px] pl-0 absolute  text-red-500">
+                          {errors.Phone} (*)
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
+                  {route?.params === "userData" ? (
+                    <View>
+                      {loading ? (
+                        <View className="flex-row space-x-1">
+                          <Button
+                            title="Please wait..."
+                            color="#1C44A6"
+                            tintColor="#fff"
+                            titleStyle={{ fontSize: 11 }}
+                            style={{
+                              width: "50%",
+                              marginTop: 10,
+                              padding: 3,
+                            }}
+                            trailing={(props) => (
+                              <ActivityIndicator size="small" color="#fff" />
+                            )}
+                            onPress={handleSubmit}
+                          />
+                          <Button
+                            title="Update Password"
+                            color="#1C44A6"
+                            titleStyle={{ fontSize: 11 }}
+                            tintColor="#fff"
+                            style={{
+                              width: "50%",
+                              marginTop: 10,
+                              padding: 2,
+                            }}
+                            onPress={() =>
+                              navigation.navigate("Update_Password")
+                            }
+                          />
+                        </View>
+                      ) : (
+                        <View className="flex-row space-x-1">
+                          <Button
+                            title="Update Profile"
+                            color="#1C44A6"
+                            titleStyle={{ fontSize: 11 }}
+                            tintColor="#fff"
+                            style={{
+                              width: "50%",
+                              marginTop: 10,
+                              padding: 3,
+                            }}
+                            isSubmitting
+                            onPress={handleSubmit}
+                          />
+                          <Button
+                            title="Update Password"
+                            color="#1C44A6"
+                            titleStyle={{ fontSize: 11 }}
+                            tintColor="#fff"
+                            style={{
+                              width: "50%",
+                              marginTop: 10,
+                              padding: 2,
+                            }}
+                            onPress={() =>
+                              navigation.navigate("Update_Password")
+                            }
+                          />
+                        </View>
+                      )}
+                    </View>
+                  ) : (
+                    ""
+                  )}
+                </>
+              )}
+            </Formik>
+            {route?.params === "userData" && (
+              <View>
+                <Button
+                  title="Delete Account"
+                  color="#1C44A6"
+                  titleStyle={{ fontSize: 11 }}
+                  variant="outlined"
+                  tintColor="#fff"
+                  style={{
+                    width: "100%",
+                    marginTop: 10,
+
+                    padding: 2,
+                  }}
+                  trailing={(props) => (
+                    <Image source={deleteImg} className="w-5 h-5" />
+                  )}
+                  onPress={handleDelete}
+                />
+              </View>
+            )}
+          </View>
         </View>
       </ScrollView>
     </View>

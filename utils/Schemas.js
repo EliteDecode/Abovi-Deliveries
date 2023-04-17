@@ -79,7 +79,7 @@ export const updatePasswordSchema = Yup.object().shape({
       message:
         "Please create a stronger password(1 upper case letter, 1 lower case letter, 1 numeric digit)",
     })
-    .required("Password is required"),
+    .required("New Password is required"),
   ConfirmNewPassword: Yup.string()
     .oneOf([Yup.ref("NewPassword"), null], "Passwords must match")
     .required("Please Confirm your Password"),

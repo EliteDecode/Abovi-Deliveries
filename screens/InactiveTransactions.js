@@ -103,7 +103,9 @@ const InactiveTransactions = () => {
       <MyStatusBar backgroundColor="#1C44A6" barStyle="light-content" />
       <View className=" mt-5 flex-1">
         <View className="flex-row space-x-3 px-5 py-3">
-          <TouchableOpacity onPress={() => navigation.navigate("Agent_Home")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Agent_Home", "home")}
+          >
             <Image source={arrow} className="w-5 h-5" />
           </TouchableOpacity>
           <Text className="text-[16px] font-black text-blue-900">
@@ -155,7 +157,7 @@ const InactiveTransactions = () => {
         </View>
       </View>
       <View className="px-5">
-        <Tab />
+        <Tab type="agentData" />
       </View>
     </View>
   );

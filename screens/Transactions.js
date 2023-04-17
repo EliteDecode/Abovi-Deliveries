@@ -94,39 +94,30 @@ const Transactions = () => {
       softwareKeyboardLayoutMode="resizeMode"
     >
       <MyStatusBar backgroundColor="#1C44A6" barStyle="light-content" />
-      <View className=" mt-5 flex-1">
-        <View className="flex-row space-x-3 px-5">
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+      <View className=" mt-2 flex-1">
+        <View className="flex-row space-x-2 px-5">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Home")}
+            className=" py-3"
+          >
             <Image source={arrow} className="w-5 h-5" />
           </TouchableOpacity>
-          <Text className="text-[16px] font-black text-blue-900">
+          <Text className="text-[16px]  font-bold text-blue-900 py-3">
             Transaction History
           </Text>
         </View>
         <View className="px-5">
-          <View className=" mt-5 border-2 rounded-lg border-blue-900">
+          <View className=" mt-5 border-2 rounded-lg border-gray-900">
             <Picker
               className=" rounded-md p-2"
               style={{ borderColor: "#ccc" }}
               selectedValue={selectedOption}
               onValueChange={(option) => handleOptionChange(option)}
             >
-              <Picker.Item
-                label="All Transactions"
-                value="all"
-                color="#1C44A6"
-              />
-              <Picker.Item
-                label="Completed"
-                value="Completed"
-                color="#1C44A6"
-              />
-              <Picker.Item label="Pending" value="Pending" color="#1C44A6" />
-              <Picker.Item
-                label="Cancelled"
-                value="Cancelled"
-                color="#1C44A6"
-              />
+              <Picker.Item label="All Transactions" value="all" color="#000" />
+              <Picker.Item label="Completed" value="Completed" color="#000" />
+              <Picker.Item label="Pending" value="Pending" color="#000" />
+              <Picker.Item label="Cancelled" value="Cancelled" color="#000" />
             </Picker>
           </View>
         </View>

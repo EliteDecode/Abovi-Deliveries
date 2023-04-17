@@ -7,7 +7,7 @@ import {
   Animated,
 } from "react-native";
 import React, { useEffect, useRef } from "react";
-import banner from "../assets/welcome3-min.jpg";
+import banner from "../assets/welcome4.jpg";
 import { Dimensions } from "react-native";
 import { useWindowDimensions } from "react-native";
 import { Button } from "@react-native-material/core";
@@ -64,10 +64,10 @@ const Welcome = () => {
               Delivery on the go...
             </Text>
           </View>
-          <View className="flex-row bottom-20 space-x-2">
+          <View className="flex-row bottom-28 space-x-2">
             <TouchableOpacity
               className="py-4 w-6/12 items-center justify-center bg-[#F3661E] rounded-md"
-              onPress={() => naviagtion.navigate("Login")}
+              onPress={() => naviagtion.navigate("Register")}
             >
               <Text className="uppercase text-white text-[12px] font-semibold ">
                 Customer
@@ -79,7 +79,7 @@ const Welcome = () => {
               onPress={() => naviagtion.navigate("Agent_Login")}
             >
               <Text className="uppercase text-white text-[12px] font-semibold ">
-                AbovePh-Rep
+                AboviPh-Rep
               </Text>
             </TouchableOpacity>
           </View>

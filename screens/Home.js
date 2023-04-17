@@ -101,8 +101,12 @@ const Home = () => {
           transactions={transactions}
         />
         <View className="mt-5">
-          <Text className="font-bold text-[22px]">Hey Champ 👋,</Text>
-          <Text className="text-[12px]">Tell Us What You Are Doing Today.</Text>
+          <Text className="font-bold text-[22px] text-blue-900">
+            Hey Champ 👋,
+          </Text>
+          <Text className="text-[12px] text-blue-900 opacity-90">
+            Tell Us What You Are Doing Today.
+          </Text>
           <View className=" flex flex-row justify-center items-center space-x-3 mt-3">
             <TouchableOpacity
               onPress={() => navigation.navigate("Preform", data)}
@@ -111,12 +115,10 @@ const Home = () => {
               }  `}
             >
               <Image source={bus} className="w-10 h-10" />
-              <Text className=" text-[13px] font-bold text-white mt-1">
+              <Text className=" text-[11px]  text-white mt-1">
                 Pick Up and Deliver
               </Text>
-              <Text className=" text-[13px] font-bold text-white mt-1">
-                Today{" "}
-              </Text>
+              <Text className=" text-[11px]  text-white ">Today </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate("Preform", data)}
@@ -125,12 +127,10 @@ const Home = () => {
               }  `}
             >
               <Image source={bike} className="w-10 h-10" />
-              <Text className=" text-[13px] font-bold text-white mt-1">
+              <Text className=" text-[11px]  text-white mt-1">
                 Pick Up, Package and
               </Text>
-              <Text className=" text-[13px] font-bold text-white mt-1">
-                Deliver Today{" "}
-              </Text>
+              <Text className=" text-[11px]  text-white ">Deliver Today </Text>
             </TouchableOpacity>
           </View>
         </View>

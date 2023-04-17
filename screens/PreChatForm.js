@@ -91,6 +91,7 @@ const PreChatForm = () => {
                 <Button
                   onPress={() => navigation.navigate("Account", "userData")}
                   title="Click Here"
+                  disableElevation
                   color="#1C44A6"
                   tintColor="#fff"
                   titleStyle={{ fontSize: 10 }}
@@ -318,6 +319,7 @@ const PreChatForm = () => {
                         onPress={handleSubmit}
                         title="Please wait..."
                         color="#1C44A6"
+                        disableElevation
                         disabled
                         titleStyle={{ fontSize: 10 }}
                         tintColor="#fff"
@@ -339,6 +341,7 @@ const PreChatForm = () => {
                           <Button
                             onPress={handleSubmit}
                             title="Continue"
+                            disableElevation
                             titleStyle={{ fontSize: 10 }}
                             color="#1C44A6"
                             tintColor="#fff"

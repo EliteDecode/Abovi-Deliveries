@@ -31,7 +31,7 @@ const Transaction_Details = () => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("screen").height;
 
-  const { setLoading, loading } = useGlobalContext();
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState("");
   async function fetchStoredData() {
     try {
@@ -45,6 +45,7 @@ const Transaction_Details = () => {
   }, []);
 
   useEffect(() => {
+    console.log(routes?.params);
     socket = io(url);
     socket.on("connect", () => {
       // listen to the "getTransactions" event
@@ -72,7 +73,7 @@ const Transaction_Details = () => {
     socket.emit(
       "AcceptTransaction",
       {
-        Email: routes?.params?.Email,
+        Email: routes?.params?.data?.Email,
         TransactionId: routes?.params?.item?._id,
       },
       (error, message) => {
@@ -151,7 +152,7 @@ const Transaction_Details = () => {
       </Modal>
       {/* end cancle modal */}
       <View className="flex-1 ">
-        <View className="bg-[#1C44A6] px-5 py-3 flex-row items-center ">
+        <View className="bg-[#1C44A6] px-5  flex-row items-center ">
           <TouchableOpacity
             onPress={() => {
               if (routes?.params?.from === "inactiveTransactions") {
@@ -166,6 +167,7 @@ const Transaction_Details = () => {
                 });
               }
             }}
+            className=" w-2/12 py-3"
           >
             <Image source={arrow} className="w-7 h-7" />
           </TouchableOpacity>
@@ -322,14 +324,31 @@ const Transaction_Details = () => {
             )}
 
             {routes?.params?.item?.Active === true &&
-            routes?.params?.from === "user" ? (
+            routes?.params?.from != undefined ? (
               <Button
                 titleStyle={{ fontSize: 11 }}
                 title={
                   routes?.params?.from === "inactiveTransactions"
-                    ? "Call Customer"
-                    : "Call Rep"
+                    ? "Call "
+                    : "Call "
                 }
+                variant="contained"
+                color="#F3661E"
+                tintColor="#fff"
+                trailing={(props) => (
+                  <Image source={phone} className="w-4 h-4" />
+                )}
+                style={{
+                  width: "50%",
+                  marginTop: 10,
+                  padding: 2,
+                }}
+                onPress={handleCallPress}
+              />
+            ) : (
+              <Button
+                titleStyle={{ fontSize: 11 }}
+                title="Not active"
                 variant="contained"
                 color="#F3661E"
                 tintColor="#fff"
@@ -347,25 +366,6 @@ const Transaction_Details = () => {
                     "An agent has not be assigned yet, you will be notified soon, But You can drop a message"
                   )
                 }
-              />
-            ) : (
-              <Button
-                titleStyle={{ fontSize: 11 }}
-                title={
-                  routes?.params?.from != "user" ? "Call Customer" : "Call Rep"
-                }
-                variant="contained"
-                color="#F3661E"
-                tintColor="#fff"
-                trailing={(props) => (
-                  <Image source={phone} className="w-4 h-4" />
-                )}
-                style={{
-                  width: "50%",
-                  marginTop: 10,
-                  padding: 2,
-                }}
-                onPress={handleCallPress}
               />
             )}
           </View>

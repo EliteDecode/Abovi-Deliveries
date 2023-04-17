@@ -23,7 +23,10 @@ const DisplayHomeTransactions = ({ transactions, data, from }) => {
       ) : (
         <>
           {transactions?.length === 0 ? (
-            <ScrollView>
+            <ScrollView
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+            >
               <View className="justify-center w-full items-center mb-20">
                 <Image
                   source={nothing}

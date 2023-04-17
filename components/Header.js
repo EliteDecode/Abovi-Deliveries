@@ -27,7 +27,7 @@ const Header = ({ name, fullname, data, type, transactions }) => {
       <View className="relative">
         <TouchableOpacity
           onPress={() => {
-            if (type == "agentUser") {
+            if (type == "agentData") {
               navigation.navigate("InactiveTransactions", data);
             } else {
               navigation.navigate("Transactions", data);

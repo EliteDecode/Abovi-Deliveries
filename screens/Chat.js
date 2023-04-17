@@ -36,6 +36,11 @@ const Chat = () => {
   useEffect(() => {
     socketRef.current = io(url);
     socketRef.current.on("connect", () => {
+      socketRef.current.emit("join-room", {
+        name: route?.params?.data?.Firstname,
+        room: route?.params?.item?.TransactionID,
+        agent: route?.params?.agent,
+      });
       socketRef.current.emit(
         "getPreviousChats",
         { room: route?.params?.item?.TransactionID },
@@ -48,19 +53,13 @@ const Chat = () => {
           }
         }
       );
-
-      socketRef.current.emit("join-room", {
-        name: route?.params?.data?.Firstname,
-        room: route?.params?.item?.TransactionID,
-        agent: route?.params?.agent,
-      });
     });
 
     return () => {
       socketRef.current.disconnect();
       socketRef.current = null;
     };
-  }, []);
+  }, [route]);
 
   useEffect(() => {
     if (socketRef.current) {
@@ -148,21 +147,21 @@ const Chat = () => {
                   {message?.from?.toLowerCase() ===
                   route?.params?.data?.Firstname?.toLowerCase() ? (
                     <View className="flex-row-reverse mt-2 relative px-5 mb-4">
-                      <View className="w-10/12 py-4 px-2   shadow-lg bg-[#1C44A6] rounded-l-xl rounded-b-xl">
+                      <View className="w-9/12 py-3 px-2   shadow-lg bg-[#1C44A6] rounded-l-xl rounded-b-xl">
                         {/* <Text className="text-[12px]    font-bold text-[#fff] mb-3">
                         {message.name}
                       </Text> */}
-                        <Text className="text-[#fff]  mb-2  text-[16px] font-normal">
+                        <Text className="text-[#fff]  mb-2  text-[12px] font-normal">
                           {message.text}
                         </Text>
-                        <Text className=" absolute bottom-2 right-3 text-[#fff]">
+                        <Text className=" absolute bottom-2 text-[10px] right-3 text-[#fff]">
                           {message.time}
                         </Text>
                       </View>
                     </View>
                   ) : (
                     <View className="px-5 mb-2 relative">
-                      <View className=" w-10/12  py-4 px-2 shadow-lg bg-white  rounded-r-xl rounded-b-xl relative">
+                      <View className=" w-10/12  py-3 px-2 shadow-lg bg-white  rounded-r-xl rounded-b-xl relative">
                         {/* <Text className="text-[12px] opacity-80 font-bold text-[#0c1630] mb-2">
                         {message.name}
                       </Text> */}

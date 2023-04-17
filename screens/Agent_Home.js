@@ -64,18 +64,14 @@ const Home = () => {
     // listen to the "connect" event
     socket.on("connect", () => {
       // listen to the "getTransactions" event
-      socket.emit(
-        "getInactiveTransactions",
-
-        (error, transaction) => {
-          if (error) {
-            setLoading(false);
-          } else {
-            setLoading(false);
-            setTransactions(transaction);
-          }
+      socket.emit("getInactiveTransactions", (error, transaction) => {
+        if (error) {
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setTransactions(transaction);
         }
-      );
+      });
 
       socket.emit(
         "getPendingTransactionsByAgent",
@@ -95,7 +91,7 @@ const Home = () => {
     return () => {
       socket.disconnect();
     };
-  }, [data]);
+  }, [route, data]);
   const MyStatusBar = ({ backgroundColor, ...props }) => (
     <View style={[styles.statusBar, { backgroundColor }]}>
       <SafeAreaView>
