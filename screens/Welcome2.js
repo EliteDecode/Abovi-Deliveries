@@ -58,7 +58,7 @@ const Welcome = () => {
         >
           <View className="flex-1 items-center justify-center">
             <Text className="text-[40px] font-black text-white">
-              Abovi<Text className=" text-[#F3661E]">ph</Text>
+              Abovi<Text className=" text-[#F3661E]">PH</Text>
             </Text>
             <Text className="pl-12 text-[12px] -mt-2 font-bold text-white">
               Delivery on the go...
@@ -79,7 +79,7 @@ const Welcome = () => {
               onPress={() => naviagtion.navigate("Agent_Login")}
             >
               <Text className="uppercase text-white text-[12px] font-semibold ">
-                AboviPh-Rep
+                Aboviph-Rep
               </Text>
             </TouchableOpacity>
           </View>

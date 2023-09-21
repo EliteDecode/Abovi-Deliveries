@@ -1,10 +1,9 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native";
 import { StatusBar } from "react-native";
 import { StyleSheet } from "react-native";
-import Tab from "../components/Tab";
 import { Image } from "react-native";
 import comment from "../assets/comment.png";
 import phone from "../assets/phone-call.png";
@@ -15,7 +14,6 @@ import arrow from "../assets/back.png";
 import tick from "../assets/tick.png";
 import { TouchableOpacity } from "react-native";
 import { url } from "../utils/Api";
-import { useGlobalContext } from "../utils/Context";
 import { io } from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
@@ -45,13 +43,12 @@ const Transaction_Details = () => {
   }, []);
 
   useEffect(() => {
-    console.log(routes?.params);
     socket = io(url);
     socket.on("connect", () => {
       // listen to the "getTransactions" event
       socket.on("TransactionAccepted", (transaction) => {
-        fetchStoredData();
-
+        fetchStoredData(transaction);
+        console.log();
         navigation.navigate("Transaction_Details", {
           item: transaction,
           from: "inactiveTransactions",
@@ -68,12 +65,16 @@ const Transaction_Details = () => {
     Linking.openURL(`tel:${routes?.params?.item?.SenderPhone}`);
   };
 
+  const handleCallAgent = () => {
+    Linking.openURL(`tel:${routes?.params?.item?.SalesRepPhone}`);
+  };
   function handleAcceptTransaction() {
     setLoading(true);
     socket.emit(
       "AcceptTransaction",
       {
         Email: routes?.params?.data?.Email,
+        Phone: routes?.params?.data?.Phone,
         TransactionId: routes?.params?.item?._id,
       },
       (error, message) => {
@@ -175,26 +176,28 @@ const Transaction_Details = () => {
             Transaction Details
           </Text>
         </View>
-        <View className="mt-5 px-5">
-          {routes?.params?.from !== undefined && (
-            <>
-              <View className="my-2">
-                <Text className="text-[13px] font-bold">Customer Name:</Text>
-                <Text className="text-[13px] opacity-80">
-                  {routes?.params?.item?.SenderFirstname} ,{" "}
-                  {routes?.params?.item?.SenderLastname}
-                </Text>
-              </View>
-              <View className="my-2">
-                <Text className="text-[13px] font-bold">
-                  Customer Location:
-                </Text>
-                <Text className="text-[13px] opacity-80">
-                  {routes?.params?.item?.SenderAddress}{" "}
-                </Text>
-              </View>
-            </>
-          )}
+        <ScrollView className="mt-5 px-5 grid grid-cols-2 gap-4">
+          <View>
+            {routes?.params?.from !== undefined && (
+              <>
+                <View className="my-2">
+                  <Text className="text-[13px] font-bold">Customer Name:</Text>
+                  <Text className="text-[13px] opacity-80">
+                    {routes?.params?.item?.SenderFirstname} ,{" "}
+                    {routes?.params?.item?.SenderLastname}
+                  </Text>
+                </View>
+                <View className="my-2">
+                  <Text className="text-[13px] font-bold">
+                    Customer Location:
+                  </Text>
+                  <Text className="text-[13px] opacity-80">
+                    {routes?.params?.item?.SenderAddress}{" "}
+                  </Text>
+                </View>
+              </>
+            )}
+          </View>
           <View className="my-2">
             <Text className="text-[13px] font-bold">Transaction Id:</Text>
             <Text className="text-[13px] opacity-80">
@@ -213,6 +216,12 @@ const Transaction_Details = () => {
             <Text className="text-[13px] font-bold">Product Location:</Text>
             <Text className="text-[13px] opacity-80">
               {routes?.params?.item?.ProductLocation}
+            </Text>
+          </View>
+          <View className="my-2">
+            <Text className="text-[13px] font-bold">Product Destination:</Text>
+            <Text className="text-[13px] opacity-80">
+              {routes?.params?.item?.ProductDestination}
             </Text>
           </View>
           <View className="my-2">
@@ -256,10 +265,10 @@ const Transaction_Details = () => {
                 "No comment yet, transaction pending"}
             </Text>
           </View>
-        </View>
+        </ScrollView>
       </View>
 
-      <View className="px-5 bottom-4">
+      <View className="px-5 border-t rounded-xl border-gray-100 pb-8 pt-3 shadow-lg bg-white ">
         {routes?.params?.item?.Active === false &&
         routes?.params?.from === "inactiveTransactions" ? (
           <TouchableOpacity
@@ -344,6 +353,28 @@ const Transaction_Details = () => {
                   padding: 2,
                 }}
                 onPress={handleCallPress}
+              />
+            ) : routes?.params?.item?.Active === true &&
+              routes?.params?.from === undefined ? (
+              <Button
+                titleStyle={{ fontSize: 11 }}
+                title={
+                  routes?.params?.from === "inactiveTransactions"
+                    ? "Call "
+                    : "Call "
+                }
+                variant="contained"
+                color="#F3661E"
+                tintColor="#fff"
+                trailing={(props) => (
+                  <Image source={phone} className="w-4 h-4" />
+                )}
+                style={{
+                  width: "50%",
+                  marginTop: 10,
+                  padding: 2,
+                }}
+                onPress={handleCallAgent}
               />
             ) : (
               <Button

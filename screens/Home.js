@@ -60,7 +60,7 @@ const Home = () => {
 
     // listen to the "connect" event
     socket.on("connect", () => {
-      // listen to the "getTransactions" event
+      setLoading(true);
       socket.emit(
         "getTransactions",
         { id: data?.data?._id },
@@ -135,7 +135,11 @@ const Home = () => {
           </View>
         </View>
 
-        <DisplayHomeTransactions transactions={transactions} data={data} />
+        <DisplayHomeTransactions
+          loading={loading}
+          transactions={transactions}
+          data={data}
+        />
       </View>
       <View className="">
         <Tab type="userData" data={data} />

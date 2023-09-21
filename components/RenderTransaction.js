@@ -61,12 +61,18 @@ const RenderTransaction = ({
         ) : (
           <Chip
             variant="filled"
-            label={item.Status}
+            label={
+              item.Status === "Pending" && item.Active === true
+                ? "Active"
+                : item.Status
+            }
             color={
               item.Status === "Completed"
-                ? "green"
-                : item.Status === "Pending"
+                ? "#A300F9"
+                : item.Status === "Pending" && item.Active === false
                 ? "orange"
+                : item.Status === "Pending" && item.Active === true
+                ? "teal"
                 : "error"
             }
             labelStyle={{ fontSize: 10 }}

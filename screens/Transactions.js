@@ -72,6 +72,22 @@ const Transactions = () => {
     if (option === "all") {
       setFilteredTransactions(transactions);
       setLoading(false);
+    } else if (option === "Active") {
+      setFilteredTransactions(
+        transactions.filter(
+          (transaction) =>
+            transaction.Status === "Pending" && transaction.Active === true
+        )
+      );
+      setLoading(false);
+    } else if (option === "Pending") {
+      setFilteredTransactions(
+        transactions.filter(
+          (transaction) =>
+            transaction.Status === "Pending" && transaction.Active === false
+        )
+      );
+      setLoading(false);
     } else {
       setFilteredTransactions(
         transactions.filter((transaction) => transaction.Status === option)
@@ -117,6 +133,7 @@ const Transactions = () => {
               <Picker.Item label="All Transactions" value="all" color="#000" />
               <Picker.Item label="Completed" value="Completed" color="#000" />
               <Picker.Item label="Pending" value="Pending" color="#000" />
+              <Picker.Item label="Active" value="Active" color="#000" />
               <Picker.Item label="Cancelled" value="Cancelled" color="#000" />
             </Picker>
           </View>

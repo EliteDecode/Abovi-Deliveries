@@ -54,6 +54,32 @@ const Account = () => {
     handleLogout,
   } = useGlobalContext();
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: "",
+      headerLeft: () => (
+        <TouchableOpacity
+          className="flex-row justify-between items-center space-x-2 px-5"
+          onPress={() => navigation.navigate(Home)}
+        >
+          <View>
+            <Image source={arrow} className="w-5 h-5" />
+          </View>
+          <View>
+            <Text className="text-[14px] font-semibold">Profile</Text>
+          </View>
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <View className="px-5">
+          <TouchableOpacity onPress={LogoutUser}>
+            <Image source={logout} className="w-5 h-5" />
+          </TouchableOpacity>
+        </View>
+      ),
+    });
+  }, [navigation]);
+
   useEffect(() => {
     async function fetchStoredData() {
       try {
@@ -120,24 +146,10 @@ const Account = () => {
   );
 
   return (
-    <View className="flex-1 bg-[#fafafa]" softwareKeyboardLayoutMode="pan">
-      <MyStatusBar backgroundColor="#1C44A6" barStyle="light-content" />
-
+    <View className="flex-1 bg-[#fff]" softwareKeyboardLayoutMode="pan">
       <ScrollView className=" flex-1  mt-5">
-        <View className="mb-56">
-          <View className="flex-row justify-between items-center px-5">
-            <TouchableOpacity onPress={() => navigation.navigate(Home)}>
-              <Image source={arrow} className="w-5 h-5" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text className="text-[13px] font-semibold">Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={LogoutUser}>
-              <Image source={logout} className="w-5 h-5" />
-            </TouchableOpacity>
-          </View>
+        <View className={`${Platform.OS === "ios" ? "mb-96" : "mb-48"}`}>
           <ProfileHead data={data} />
-
           {/* Profile form */}
           <View className="px-5 mt-5 py-1">
             <View>

@@ -17,6 +17,7 @@ import { TouchableOpacity } from "react-native";
 import * as yup from "yup";
 import { useGlobalContext } from "../utils/Context";
 import { ScrollView } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 const Forgot_Password = () => {
   const navigation = useNavigation();
@@ -31,6 +32,7 @@ const Forgot_Password = () => {
   });
 
   const handleSend = () => {
+   
     setLoading(true);
     forgotPassword(email).then((data) => {
       if (data.message === "success") {
@@ -58,6 +60,7 @@ const Forgot_Password = () => {
 
   return (
     <ScrollView className="flex-1  relative" softwareKeyboardLayoutMode="pan">
+      <StatusBar style="auto" />
       <View className="mb-56">
         <View className=" py-10 mx-2 rounded-md shadow-2xl bg-white mt-48">
           <View className="px-4">
@@ -71,13 +74,11 @@ const Forgot_Password = () => {
           <View className="mt-5 px-4">
             <TextInput
               label="Email"
+             
               style={styles.input}
               labelStyle={styles.labelStyle}
               className="w-12/12 mb-1"
               onChangeText={(text) => {
-                setEmail(text);
-              }}
-              onBlur={(text) => {
                 setEmail(text);
               }}
               value={email}

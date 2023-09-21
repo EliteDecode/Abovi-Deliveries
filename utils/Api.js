@@ -3,6 +3,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const url = `https://backend-abovi-delivery-app.onrender.com`;
 // export const url = `http://192.168.43.235:5000`;
+// export const url = `http://172.20.10.2:5000`;
+// export const url = `http://192.168.8.104:5000`;
+
 //Register user
 const register = async (userData) => {
   try {

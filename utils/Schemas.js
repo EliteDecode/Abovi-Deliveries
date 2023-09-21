@@ -88,8 +88,9 @@ export const updatePasswordSchema = Yup.object().shape({
 export const productSchema = Yup.object().shape({
   Name: Yup.string().required("Product Name is Required"),
   Location: Yup.string().required("Product Location is Required"),
+  Destination: Yup.string().required("Product Destination is Required"),
   Weight: Yup.string().required("Product Weight is Required"),
-  Quantity: Yup.string().required("Product Quantity is required"),
+  Quantity: Yup.number().integer().required("Product Quantity is required"),
   Others: Yup.string(),
 });
 

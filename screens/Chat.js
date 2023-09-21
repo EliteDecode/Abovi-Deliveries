@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -13,15 +13,14 @@ import {
 import { TextInput, Button } from "@react-native-material/core";
 import { Avatar } from "@react-native-material/core";
 import arrow from "../assets/back.png";
-import dots from "../assets/dots.png";
-import send from "../assets/paper-plane.png";
-import robot from "../assets/robot.png";
+import { Icon } from "react-native-elements";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { url } from "../utils/Api";
 import io from "socket.io-client";
+import { Alert } from "react-native";
 let socket;
 const Chat = () => {
-  const keyboardVerticalOffset = Platform.OS === "ios" ? 50 : 0;
+  const keyboardVerticalOffset = 90;
   const navigation = useNavigation();
   const textInputRef = useRef(null);
   const route = useRoute();
@@ -32,6 +31,68 @@ const Chat = () => {
     setMessage(value);
   };
   const socketRef = useRef(null);
+
+  useEffect(() => {
+    // Call scrollToEnd after the layout has been calculated and the content has been updated
+    scrollViewRef.current.scrollToEnd({ animated: true });
+  }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerBackTitleVisible: false,
+      headerStyle: {
+        backgroundColor: "#1C44A6",
+      },
+      title: "",
+      headerTintColor: "#fff",
+      headerLeft: () => (
+        <View className=" bg-[#1C44A6] px-6 flex-row justify-between items-center">
+          <View className=" space-x-2 items-center flex-row ">
+            <TouchableOpacity
+              onPress={() => {
+                if (route?.params?.agent === "true") {
+                  navigation.navigate("Transaction_Details", {
+                    item: route?.params?.item,
+                    data: route?.params?.data,
+                    from: "activeTransaction",
+                  });
+                } else {
+                  navigation.navigate("Transaction_Details", {
+                    item: route?.params?.item,
+                    data: route?.params?.data,
+                    from: undefined,
+                  });
+                }
+              }}
+            >
+              <Image source={arrow} className="w-7 h-7" />
+            </TouchableOpacity>
+            <View className="flex-row space-x-2 items-center">
+              <Avatar
+                label={`${route?.params?.data?.Firstname} ${route?.params?.data?.Lastname}`}
+                size={35}
+              />
+              <View>
+                <Text className="text-[14px] capitalize font-bold text-white">
+                  {route?.params?.data?.Lastname}{" "}
+                  {route?.params?.data?.Firstname}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      ),
+      headerRight: () => (
+        <TouchableOpacity
+          className="px-6 py-2"
+          onPress={() => {
+            Alert.alert("Audio Call", "Audio Call Button Pressed");
+          }}
+        ></TouchableOpacity>
+      ),
+    });
+  }, []);
 
   useEffect(() => {
     socketRef.current = io(url);
@@ -91,60 +152,29 @@ const Chat = () => {
   );
 
   return (
-    <View
-      className="flex-1 bg-[#fafafa]"
-      softwareKeyboardLayoutMode="resizeMode"
-    >
-      <MyStatusBar backgroundColor="#1C44A6" barStyle="light-content" />
-      <View className="py-3 bg-[#1C44A6] px-6 flex-row justify-between items-center">
-        <View className=" space-x-2 items-center flex-row ">
-          <TouchableOpacity
-            onPress={() => {
-              if (route?.params?.agent === "true") {
-                navigation.navigate("Transaction_Details", {
-                  item: route?.params?.item,
-                  data: route?.params?.data,
-                  from: "activeTransaction",
-                });
-              } else {
-                navigation.navigate("Transaction_Details", {
-                  item: route?.params?.item,
-                  data: route?.params?.data,
-                  from: undefined,
-                });
-              }
-            }}
-          >
-            <Image source={arrow} className="w-5 h-5" />
-          </TouchableOpacity>
-          <View className="flex-row space-x-2 items-center">
-            <Avatar
-              label={`${route?.params?.data?.Firstname} ${route?.params?.data?.Lastname}`}
-              size={35}
-            />
-            <View>
-              <Text className="text-[14px] capitalize font-bold text-white">
-                {route?.params?.data?.Lastname} {route?.params?.data?.Firstname}
-              </Text>
-              <Text className="text-white opacity-75 text-[11px]">
-                Customer
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
-
+    <View className="flex-1 bg-[#fafafa]">
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={keyboardVerticalOffset}
         style={{ flex: 1 }}
       >
-        <ScrollView ref={scrollViewRef} className="mb-4 flex-1">
-          <View className="py-5 ">
+        <ScrollView
+          ref={scrollViewRef}
+          className={`${Platform.OS === "ios" ? "mb-3" : "mb-1"} flex-1`}
+          onContentSizeChange={() => {
+            // Call scrollToEnd when the content size changes
+            scrollViewRef.current.scrollToEnd({ animated: true });
+          }}
+          onLayout={() => {
+            // Call scrollToEnd when the layout is calculated
+            scrollViewRef.current.scrollToEnd({ animated: true });
+          }}
+        >
+          <View className="py-5">
             {messages?.map((message, index) => {
               return (
                 <View key={index}>
-                  {message?.from?.toLowerCase() ===
+                  {message?.from?.toLowerCase() ==
                   route?.params?.data?.Firstname?.toLowerCase() ? (
                     <View className="flex-row-reverse mt-2 relative px-5 mb-4">
                       <View className="w-9/12 py-3 px-2   shadow-lg bg-[#1C44A6] rounded-l-xl rounded-b-xl">
@@ -161,14 +191,14 @@ const Chat = () => {
                     </View>
                   ) : (
                     <View className="px-5 mb-2 relative">
-                      <View className=" w-10/12  py-3 px-2 shadow-lg bg-white  rounded-r-xl rounded-b-xl relative">
+                      <View className=" w-9/12  py-3 px-2 shadow-lg bg-white  rounded-r-xl rounded-b-xl relative">
                         {/* <Text className="text-[12px] opacity-80 font-bold text-[#0c1630] mb-2">
                         {message.name}
                       </Text> */}
-                        <Text className="text-[#1C44A6] mb-2 text-[16px] font-normal">
+                        <Text className="text-[#1C44A6] mb-2 text-[12px] font-normal">
                           {message.text}
                         </Text>
-                        <Text className="absolute bottom-2 right-3  text-[#0c1630]">
+                        <Text className="absolute bottom-2 right-3 text-[10px] text-[#0c1630]">
                           {message.time}
                         </Text>
                       </View>
@@ -179,13 +209,17 @@ const Chat = () => {
             })}
           </View>
         </ScrollView>
-        <View className="px-4 bottom-5">
-          <View className="px-6 py-1 bg-white shadow-lg rounded-md flex-row justify-between items-center w-full space-x-1">
+        <View className={`px-4   bottom-2`}>
+          <View className="px-6  bg-white shadow-lg rounded-md flex-row justify-between items-center w-full space-x-1">
             <TextInput
               variant="standard"
+              inputStyle={{ fontSize: 12 }}
               ref={textInputRef}
               placeholder="Type Something..."
               color="#fff"
+              onFocus={() =>
+                scrollViewRef.current.scrollToEnd({ animated: true })
+              }
               onChangeText={handleChange}
               onKeyPress={(e) => (e.Key === "Enter" ? sendMessage(e) : null)}
               style={{ width: 220 }}

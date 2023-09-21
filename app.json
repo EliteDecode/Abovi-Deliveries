@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
+    "scheme": "com.abovi.app",
     "splash": {
       "image": "./assets/splash1.png",
       "resizeMode": "contain",
@@ -20,8 +21,8 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#1C44A6"
       },
-      "softwareKeyboardLayoutMode": "pan",
-      "package": "com.elitede_code.abovi"
+      "googleServicesFile": "./google-services.json",
+      "package": "com.abovi.app"
     },
 
     "web": {

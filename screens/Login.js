@@ -2,7 +2,6 @@ import {
   View,
   Text,
   SafeAreaView,
-  StatusBar,
   Image,
   TouchableOpacity,
   StyleSheet,
@@ -24,7 +23,9 @@ import { useGlobalContext } from "../utils/Context";
 import authService from "../utils/Api";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { ScrollView } from "react-native";
-const Login = () => {
+import { StatusBar } from "expo-status-bar";
+const Login = ({ route }) => {
+  const { userToken } = route.params;
   const height = useHeaderHeight();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,7 @@ const Login = () => {
       className="flex-1 bg-[#fafafa] relative"
       softwareKeyboardLayoutMode="resizeMode"
     >
+      <StatusBar style="auto" />
       <View className="mb-56">
         <View className=" mt-10 flex-1 z-10">
           <View className="pl-6 mt-10">
@@ -56,22 +58,19 @@ const Login = () => {
               validationSchema={LoginSchema}
               onSubmit={(values) => {
                 setLoading(true);
-                authService.login(values).then((data) => {
-                  if (data.message === "success") {
-                    setLoading(false);
-                    navigation.replace("Home", data);
-                  } else {
-                    setLoading(false);
-                    Alert.alert("Opps", `${data}`, [
-                      {
-                        text: "Cancel",
-                        onPress: () => console.log(""),
-                        style: "cancel",
-                      },
-                      { text: "OK", onPress: () => console.log("") },
-                    ]);
-                  }
-                });
+                authService
+                  .login({ ...values, Pushtoken: userToken })
+                  .then((data) => {
+                    if (data.message === "success") {
+                      setLoading(false);
+                      navigation.replace("Home", data);
+                    } else {
+                      setLoading(false);
+                      Alert.alert("Opps", `${data}`, [
+                        { text: "OK", onPress: () => console.log("") },
+                      ]);
+                    }
+                  });
               }}
             >
               {({
@@ -101,7 +100,7 @@ const Login = () => {
                     />
                     <View className="relative">
                       {errors.Email && touched.Email ? (
-                        <Text className="text-[13px] pl-3 absolute  text-red-500">
+                        <Text className="text-[11px] pl-3 absolute  text-red-500">
                           {errors.Email} (*)
                         </Text>
                       ) : null}
@@ -124,7 +123,7 @@ const Login = () => {
                     />
                     <View className="relative">
                       {errors.Password && touched.Password ? (
-                        <Text className="text-[13px] pl-3 absolute  text-red-500">
+                        <Text className="text-[11px] pl-3 absolute  text-red-500">
                           {errors.Password} (*)
                         </Text>
                       ) : null}

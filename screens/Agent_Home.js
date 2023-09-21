@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Avatar, Button, Chip } from "@react-native-material/core";
 import Tab from "../components/Tab";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import nothing from "../assets/ab-nothing1.png";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -31,6 +31,7 @@ const Home = () => {
   const [transactions, setTransactions] = useState([]);
   const [pendingTransactions, setPendingTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const socketRef = useRef(null);
 
   const {
     setAddressAgent,
@@ -59,21 +60,34 @@ const Home = () => {
 
   useEffect(() => {
     setLoading(true);
-    socket = io(url);
+    socketRef.current = io(url);
 
     // listen to the "connect" event
-    socket.on("connect", () => {
-      // listen to the "getTransactions" event
-      socket.emit("getInactiveTransactions", (error, transaction) => {
-        if (error) {
-          setLoading(false);
-        } else {
-          setLoading(false);
-          setTransactions(transaction);
+    socketRef.current.on("connect", () => {
+      socketRef.current.emit(
+        "getInactiveTransactions",
+        (error, transaction) => {
+          if (error) {
+            setLoading(false);
+          } else {
+            setLoading(false);
+            setTransactions(transaction);
+          }
         }
-      });
+      );
+      // listen to the "getTransactions" event
+    });
 
-      socket.emit(
+    return () => {
+      socketRef.current.disconnect();
+      socketRef.current = null;
+    };
+    // return a cleanup function to disconnect the socket
+  }, [route]);
+
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.emit(
         "getPendingTransactionsByAgent",
         { data: data?.data?.Email },
         (error, transaction) => {
@@ -85,13 +99,22 @@ const Home = () => {
           }
         }
       );
-    });
+    }
+  }, [data]);
 
-    // return a cleanup function to disconnect the socket
-    return () => {
-      socket.disconnect();
-    };
-  }, [route, data]);
+  useEffect(() => {
+    if (socketRef.current) {
+      console.log("heydo");
+      socketRef.current.on("inactiveTransactions", (transaction) => {
+        setTransactions(transaction);
+      });
+
+      socketRef.current.on("inactiveTransactionsError", ({ error }) => {
+        console.error("Error getting inactive transactions:", error);
+        // Handle the error as needed
+      });
+    }
+  }, []);
   const MyStatusBar = ({ backgroundColor, ...props }) => (
     <View style={[styles.statusBar, { backgroundColor }]}>
       <SafeAreaView>
@@ -154,6 +177,7 @@ const Home = () => {
         <DisplayHomeTransactions
           transactions={pendingTransactions}
           data={data}
+          loading={loading}
           from="agent"
         />
       </View>

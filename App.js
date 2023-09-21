@@ -1,7 +1,8 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as Notifications from "expo-notifications";
 import Home from "./screens/Home";
 import Onboarding from "./screens/Onboarding";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -24,14 +25,36 @@ import Transaction_Details from "./screens/Transaction_Details";
 import ChatRooms from "./screens/ChatRooms";
 import InactiveTransactions from "./screens/InactiveTransactions";
 import ActiveTransactions from "./screens/ActiveTransactions";
+import { useEffect } from "react";
+import { useNotification } from "./utils/useNotifications";
+import { useState } from "react";
+import { useRef } from "react";
+import * as Linking from "expo-linking";
+const prefix = Linking.createURL("/");
 
 const Stack = createStackNavigator();
 const App = () => {
+  const linking = {
+    prefixes: [prefix],
+    config: {
+      screens: {
+        InactiveTransactions: "InactiveTransactions",
+        Agent_Login: "Agent_Login",
+        Login: "Login",
+        Home: "Home",
+      },
+    },
+  };
   const [firstLaunch, setFirstLaunch] = React.useState(null);
+  const [userToken, setUserToken] = useState("");
+  const [notification, setNotification] = useState(false);
   const [storeData, setStoreData] = React.useState(null);
   const [loggedIn, setLoggedIn] = React.useState(storeData);
   const [agentData, setAgentData] = React.useState(null);
   const [agentLoggedIn, setAgentLoggedIn] = React.useState(agentData);
+  const { registerForPushNotificationsAsync } = useNotification();
+  const notificationListener = useRef();
+  const responseListener = useRef();
   React.useEffect(() => {
     async function setData() {
       const appData = await AsyncStorage.getItem("appLaunched");
@@ -72,58 +95,167 @@ const App = () => {
     setAgentLoggedIn(false);
   };
 
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+    const getTokenOfUser = async () => {
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+
+      setUserToken(token);
+    };
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        if (
+          response?.notification.request.content.data.type ===
+          "transaction_customer"
+        ) {
+          storeData != null
+            ? Linking.openURL(`${prefix}Home`)
+            : Linking.openURL(`${prefix}Login`);
+        } else if (
+          response?.notification.request.content.data.type === "transaction"
+        ) {
+          agentData != null
+            ? Linking.openURL(`${prefix}InactiveTransactions`)
+            : Linking.openURL(`${prefix}Agent_Login`);
+        }
+      });
+
+    getTokenOfUser();
+    console.log(agentLoggedIn);
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   return (
     firstLaunch != null && (
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <ToastProvider>
           <AppProvider
             handleLogout={handleLogout}
             handleLogoutAgent={handleLogoutAgent}
           >
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Navigator>
               {firstLaunch && (
-                <Stack.Screen name="Onboarding" component={Onboarding} />
+                <Stack.Screen
+                  name="Onboarding"
+                  component={Onboarding}
+                  options={{ headerShown: false }}
+                />
               )}
 
-              {!loggedIn && <Stack.Screen name="Welcome" component={Welcome} />}
+              {!loggedIn && (
+                <Stack.Screen
+                  name="Welcome"
+                  component={Welcome}
+                  options={{ headerShown: false }}
+                />
+              )}
+              {/* {!agentLoggedIn && (
+                <Stack.Screen
+                  name="Welcome"
+                  component={Welcome}
+                  options={{ headerShown: false }}
+                />
+              )} */}
 
-              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{ headerShown: false }}
+              />
 
-              <Stack.Screen name="Agent_Home" component={Agent_Home} />
-              <Stack.Screen name="Register" component={Register} />
+              <Stack.Screen
+                name="Agent_Home"
+                component={Agent_Home}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Register"
+                component={Register}
+                options={{ headerShown: false }}
+                initialParams={{ userToken }}
+              />
               <Stack.Screen
                 name="Confirm_Register_code"
                 component={Confirm_Code_Register}
+                options={{ headerShown: false }}
+                initialParams={{ userToken }}
               />
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="Agent_Login" component={Agent_Login} />
-              <Stack.Screen name="Preform" component={PreChatForm} />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{ headerShown: false }}
+                initialParams={{ userToken }}
+              />
+              <Stack.Screen
+                name="Agent_Login"
+                component={Agent_Login}
+                options={{ headerShown: false }}
+                initialParams={{ userToken }}
+              />
+              <Stack.Screen
+                name="Preform"
+                component={PreChatForm}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="Chat" component={Chat} />
-              <Stack.Screen name="ChatRooms" component={ChatRooms} />
+              <Stack.Screen
+                name="ChatRooms"
+                component={ChatRooms}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="Account" component={Account} />
 
-              <Stack.Screen name="Transactions" component={Transactions} />
+              <Stack.Screen
+                name="Transactions"
+                component={Transactions}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen
                 name="InactiveTransactions"
                 component={InactiveTransactions}
+                options={{ headerShown: false }}
               />
               <Stack.Screen
                 name="ActiveTransactions"
                 component={ActiveTransactions}
+                options={{ headerShown: false }}
               />
 
               <Stack.Screen
                 name="Transaction_Details"
                 component={Transaction_Details}
+                options={{ headerShown: false }}
               />
 
               <Stack.Screen
                 name="Update_Password"
                 component={Update_Password}
+                options={{ headerShown: false }}
               />
               <Stack.Screen
                 name="Forgot_Password"
                 component={Forget_Password}
+                options={{ headerShown: false }}
               />
               <Stack.Screen name="Verify_Update" component={Verify_Update} />
             </Stack.Navigator>

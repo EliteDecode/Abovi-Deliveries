@@ -27,7 +27,7 @@ const CompleteTransaction = ({ data, agent }) => {
   useEffect(() => {
     socketRef.current.on("transactionCompleted", (transaction) => {
       Alert.alert(
-        "Hurray 👏",
+        "Hurray 🎉",
         `This transaction has been closed and said amount paid`,
         [
           {
@@ -54,7 +54,7 @@ const CompleteTransaction = ({ data, agent }) => {
           onSubmit={(values) => {
             socketRef.current.emit(
               "completeTransaction",
-              { data, values },
+              { ...data, ...values },
               (error, transaction) => {
                 if (error) {
                   setLoading(false);
@@ -69,6 +69,7 @@ const CompleteTransaction = ({ data, agent }) => {
                   );
                 } else {
                   setLoading(false);
+                  navigation.navigate("Agent_Home");
                 }
               }
             );
@@ -90,6 +91,7 @@ const CompleteTransaction = ({ data, agent }) => {
               >
                 <TextInput
                   label="Price"
+                  inputStyle={{ fontSize: 12 }}
                   style={styles.input}
                   labelStyle={styles.labelStyle}
                   className="w-11/12 mb-1"
@@ -100,7 +102,7 @@ const CompleteTransaction = ({ data, agent }) => {
                 />
                 <View className="relative">
                   {errors.Price && touched.Price ? (
-                    <Text className="text-[13px] pl-3 absolute  text-red-500">
+                    <Text className="text-[11px] pl-3 absolute  text-red-500">
                       {errors.Price} (*)
                     </Text>
                   ) : null}
@@ -114,6 +116,7 @@ const CompleteTransaction = ({ data, agent }) => {
                 <TextInput
                   label="Comment"
                   style={styles.input}
+                  inputStyle={{ fontSize: 12 }}
                   labelStyle={styles.labelStyle}
                   className="w-11/12 mb-1"
                   onChangeText={handleChange("Comment")}
@@ -122,7 +125,7 @@ const CompleteTransaction = ({ data, agent }) => {
                 />
                 <View className="relative">
                   {errors.Comment && touched.Comment ? (
-                    <Text className="text-[13px] pl-3 absolute  text-red-500">
+                    <Text className="text-[11px] pl-3 absolute  text-red-500">
                       {errors.Comment} (*)
                     </Text>
                   ) : null}

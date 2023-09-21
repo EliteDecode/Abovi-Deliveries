@@ -3,7 +3,7 @@ const data = [
     id: 1,
     image: require("../assets/de3.png"),
     title: "Trigger a Delivery/Pickup",
-    text: " We store products for e-commerce merchandize, take their orders, pick up their cash o delivery and remit to their account.",
+    text: " We store products for e-commerce merchandize, take their orders, pick up their cash on delivery and remit to their account.",
   },
   {
     id: 2,

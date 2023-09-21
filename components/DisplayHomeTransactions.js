@@ -10,8 +10,7 @@ import RenderTransaction from "./RenderTransaction";
 import { ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const DisplayHomeTransactions = ({ transactions, data, from }) => {
-  const { loading, setLoading } = useGlobalContext();
+const DisplayHomeTransactions = ({ transactions, data, from, loading }) => {
   const navigation = useNavigation();
   const today = new Date().setHours(0, 0, 0, 0);
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -20,6 +20,7 @@ import arrowImg from "../assets/arrow-right.png";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import authService from "../utils/Api";
 import { TouchableOpacity } from "react-native";
+import { StatusBar } from "expo-status-bar";
 const CELL_COUNT = 5;
 
 const Confirm_Code_Register = () => {
@@ -27,12 +28,17 @@ const Confirm_Code_Register = () => {
   const [loading, setLoading] = useState(false);
   const [loadingSendCode, setLoadingSendCode] = useState(false);
   const route = useRoute();
+  const { userToken } = route.params;
   const [value, setValue] = useState("");
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
+
+  useEffect(() => {
+    console.log(route?.params);
+  }, []);
 
   const handleVerify = () => {
     setLoading(true);
@@ -41,23 +47,20 @@ const Confirm_Code_Register = () => {
       uniqueString: value,
     };
 
-    authService.verify(Verification_details).then((data) => {
-      if (data.message === "verified") {
-        setLoading(false);
-        navigation.replace("Home", data);
-      } else {
-        setLoading(false);
-        setValue("");
-        Alert.alert("Opps", `${data}`, [
-          {
-            text: "Cancel",
-            onPress: () => console.log(""),
-            style: "cancel",
-          },
-          { text: "OK", onPress: () => console.log("") },
-        ]);
-      }
-    });
+    authService
+      .verify({ ...Verification_details, Pushtoken: userToken })
+      .then((data) => {
+        if (data.message === "verified") {
+          setLoading(false);
+          navigation.replace("Home", data);
+        } else {
+          setLoading(false);
+          setValue("");
+          Alert.alert("Opps", `${data}`, [
+            { text: "OK", onPress: () => console.log("") },
+          ]);
+        }
+      });
   };
 
   const handleResend = () => {
@@ -95,6 +98,7 @@ const Confirm_Code_Register = () => {
       className="flex-1  relative"
       softwareKeyboardLayoutMode="pan"
     >
+      <StatusBar style="auto" />
       <View className=" py-10 mx-2 rounded-md shadow-2xl bg-white mt-48">
         <View className="px-10">
           <Text className="font-bold text-[22px]">Please Verify 🔒</Text>
@@ -110,6 +114,7 @@ const Confirm_Code_Register = () => {
           value={value}
           onChangeText={setValue}
           cellCount={CELL_COUNT}
+          onSubmitEditing={handleVerify}
           rootStyle={styles.codeFieldRoot}
           keyboardType="number-pad"
           textContentType="oneTimeCode"

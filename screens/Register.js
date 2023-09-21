@@ -2,7 +2,6 @@ import {
   View,
   Text,
   SafeAreaView,
-  StatusBar,
   Image,
   TouchableOpacity,
   StyleSheet,
@@ -21,6 +20,7 @@ import { SignupSchema } from "../utils/Schemas";
 import { useGlobalContext } from "../utils/Context";
 import authService from "../utils/Api";
 import { ScrollView } from "react-native";
+import { StatusBar } from "expo-status-bar";
 const Register = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -31,6 +31,7 @@ const Register = () => {
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
     >
+      <StatusBar style="auto" />
       <View className="mb-56">
         <View
           className={`${Platform.OS === "ios" ? "mt-5" : "mt-2"}  flex-1 z-10`}
@@ -74,11 +75,6 @@ const Register = () => {
                   } else {
                     setLoading(false);
                     Alert.alert("Opps", `${data}`, [
-                      {
-                        text: "Cancel",
-                        onPress: () => console.log(""),
-                        style: "cancel",
-                      },
                       { text: "OK", onPress: () => console.log("") },
                     ]);
                   }
